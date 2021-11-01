@@ -44,8 +44,8 @@ metadata {
 
 preferences {
     input("IPAddress", "string", title: "The IP Address to ping (127.0.0.1)", defaultValue: '127.0.0.1', required: true)
-    input("count", "number", title: "The number of ping requests to send", defaultValue: 3, range: "1..5")
-    input("frequency", "number", title: "Seconds between pings \n Numbers higger than 1", defaultValue: 0, required: true)
+    input("count", "number", title: "The number of ping requests to send\nNumber between 1 and 5", defaultValue: 3, range: "1..5")
+    input("frequency", "number", title: "Seconds between pings\nNumbers higger than 1", defaultValue: 0, required: true)
     input("debugEnable", "bool", title: "Enable debug logging?")
 }
 
