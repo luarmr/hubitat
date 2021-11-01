@@ -1,0 +1,19 @@
+{
+  "author": "Raul Martin Rodriguez",
+  "gitHubUrl": "https://github.com/luarmr",
+  "packages": [
+    {
+      "id": "7fa11e61-dde1-46a6-b303-cb05771de2b8",
+      "name": "Virtual ip presence sensor",
+      "category": "Utility",
+      "location": "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/virtual_ip_presence_sensor/packageManifest.json",
+      "description": "Is that machina alive?A wrapper for Hubitat. helper.NetworkUtils. PingData Allows creating a presence sensor based on an IP health of a remote host.",
+      "tags": [
+        "Cloud",
+        "LAN",
+        "Monitoring",
+        "Presence & Location"
+      ]
+    }
+  ]
+}
