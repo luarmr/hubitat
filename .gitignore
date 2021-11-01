@@ -4,6 +4,9 @@
 # Log file
 *.log
 
+#Pycharm
+.idea
+
 # BlueJ files
 *.ctxt
 
