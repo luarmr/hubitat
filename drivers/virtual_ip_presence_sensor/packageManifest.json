@@ -1,0 +1,17 @@
+{
+  "packageName": "Virtual IP presence sensor",
+  "author": "Raul Martin Rodriguez",
+  "version": "1.0",
+  "minimumHEVersion": "2.2.8.156",
+  "dateReleased": "2021-10-31",
+  "drivers": [
+    {
+      "id": "b7437b31-4baa-43b8-9b20-ecf2d21fb45b",
+      "name": "Virtual IP presence sensor",
+      "namespace": "luarmr",
+      "location": "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/virtual_ip_presence_sensor/virtual_ip_presence_sensor.groovy",
+      "required": true,
+      "version": "1.0.0"
+    }
+  ]
+}
