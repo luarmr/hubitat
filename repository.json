@@ -7,7 +7,7 @@
       "name": "Virtual ip presence sensor",
       "category": "Utility",
       "location": "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/virtual_ip_presence_sensor/packageManifest.json",
-      "description": "Is that machina alive?A wrapper for Hubitat. helper.NetworkUtils. PingData Allows creating a presence sensor based on an IP health of a remote host.",
+      "description": "Is that machine alive?A wrapper for Hubitat. Allows you to create a presence sensor based on an IP health of a remote host.",
       "tags": [
         "Cloud",
         "LAN",
