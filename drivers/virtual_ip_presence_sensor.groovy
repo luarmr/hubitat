@@ -26,7 +26,7 @@ metadata {
         name: "Virtual IP presence sensor",
         namespace: "luarmr",
         author: "Raul Martin Rodriguez",
-        importUrl: "",
+        importUrl: "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/virtual_ip_presence_sensor.groovy",
     ) {
         capability "PresenceSensor"
         capability "Initialize"
