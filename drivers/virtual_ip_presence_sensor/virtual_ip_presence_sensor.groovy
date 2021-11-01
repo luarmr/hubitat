@@ -19,14 +19,14 @@
  *    2021-10-31  luarmr         Created basic version for a presence ip virtual sensor
  */
 
-import hubitat.helper.NetworkUtils.PingData 
+import hubitat.helper.NetworkUtils.PingData
 
 metadata {
     definition(
         name: "Virtual IP presence sensor",
         namespace: "luarmr",
         author: "Raul Martin Rodriguez",
-        importUrl: "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/virtual_ip_presence_sensor.groovy",
+        importUrl: "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/virtual_ip_presence_sensor/virtual_ip_presence_sensor.groovy",
     ) {
         capability "PresenceSensor"
         capability "Initialize"
@@ -45,7 +45,7 @@ metadata {
 preferences {
     input("IPAddress", "string", title: "The IP Address to ping (127.0.0.1)", defaultValue: '127.0.0.1', required: true)
     input("count", "number", title: "The number of ping requests to send\nNumber between 1 and 5", defaultValue: 3, range: "1..5")
-    input("frequency", "number", title: "Seconds between pings\nNumbers higger than 1", defaultValue: 0, required: true)
+    input("frequency", "number", title: "Seconds between pings\nNumbers higher than 1", defaultValue: 0, required: true)
     input("debugEnable", "bool", title: "Enable debug logging?")
 }
 
