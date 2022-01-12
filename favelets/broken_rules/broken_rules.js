@@ -8,5 +8,7 @@ Array.from(document.querySelectorAll('.nameDiv a'))
         const text = await response.text()
         if (text.indexOf('**Broken Action**') !== -1) {
             el.style.background = 'red';
+        } else {
+            el.style.background = '#90EE90';
         }
     })
