@@ -8,7 +8,7 @@ To use this tool, you can just run this code on your console on the apps list se
 
 If you want to use it repeatedly, you can create a new bookmark with the following content:
 
-```javascript:(function(){if(window.UBookmarklet!==undefined){UBookmarklet();}else{var scr ='https://raw.githubusercontent.com/luarmr/hubitat/main/favelets/broken_rules/broken_rules.js; var oReq = new XMLHttpRequest(); oReq.addEventListener("load", function fLoad() {eval(this.responseText + '\r\n//# sourceURL=' + scr)}); oReq.open("GET", scr); oReq.send(); false;}})();```
+```javascript:(function(){var scr ='https://raw.githubusercontent.com/luarmr/hubitat/main/favelets/broken_rules/broken_rules.js'; var oReq = new XMLHttpRequest(); oReq.addEventListener("load", function fLoad() {eval(this.responseText)}); oReq.open("GET", scr); oReq.send(); false;})();```
 
 
 To know more about favelets:
