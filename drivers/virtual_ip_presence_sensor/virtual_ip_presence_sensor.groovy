@@ -17,6 +17,7 @@
  *    Date        Who            What
  *    ----        ---            ----
  *    2021-10-31  luarmr         Created basic version for a presence ip virtual sensor
+ *    2022-01-17  luarmr         Remove tracking to not always relevant attributes, the sensor became too chatty
  */
 
 import hubitat.helper.NetworkUtils.PingData
@@ -46,6 +47,14 @@ preferences {
     input("IPAddress", "string", title: "The IP Address to ping (127.0.0.1)", defaultValue: '127.0.0.1', required: true)
     input("count", "number", title: "The number of ping requests to send\nNumber between 1 and 5", defaultValue: 3, range: "1..5")
     input("frequency", "number", title: "Seconds between pings\nNumbers higher than 1", defaultValue: 0, required: true)
+
+    input("trackPercentLoss", "bool", title: "Track percentLoss?", defaultValue: false)
+    input("trackPacketsTransmitted", "bool", title: "Track packetsTransmitted?", defaultValue: false)
+    input("trackPacketsReceived", "bool", title: "Track packetsReceived?", defaultValue: false)
+    input("trackMin", "bool", title: "Track min?", defaultValue: false)
+    input("trackAvg", "bool", title: "Track avg?", defaultValue: false)
+    input("trackMax", "bool", title: "Track max?", defaultValue: false)
+
     input("debugEnable", "bool", title: "Enable debug logging?")
 }
 
@@ -54,6 +63,8 @@ def installed() {
 }
 
 def updateStates(currentIPAddress = "No valid IPAddress", pingData = null) {
+    NOT_TRACKING = '<span style="color:grey">Not tracking</span>'
+
     new_values = pingData != null ? pingData : [
         packetLoss: 100,
         packetsTransmitted: 0,
@@ -65,12 +76,13 @@ def updateStates(currentIPAddress = "No valid IPAddress", pingData = null) {
 
     sendEvent(name: "currentIPAddress", value: currentIPAddress)
     sendEvent(name: "presence", value: (new_values.packetLoss < 100 ? "present" : "not present"))
-    sendEvent(name: "percentLoss", value: (new_values.packetLoss), unit: "%")
-    sendEvent(name: "packetsTransmitted", value: new_values.packetsTransmitted)
-    sendEvent(name: "packetsReceived", value: new_values.packetsReceived)
-    sendEvent(name: "min", value: new_values.rttMin, unit: "ms")
-    sendEvent(name: "avg", value: new_values.rttAvg, unit: "ms")
-    sendEvent(name: "max", value: new_values.rttMax, unit: "ms")
+
+    sendEvent(name: "percentLoss", value: trackPercentLoss ? new_values.packetLoss : NOT_TRACKING, unit: "%")
+    sendEvent(name: "packetsTransmitted", value: trackPacketsTransmitted ? new_values.packetsTransmitted :  NOT_TRACKING)
+    sendEvent(name: "packetsReceived", value: trackPacketsReceived ? new_values.packetsReceived :  NOT_TRACKING)
+    sendEvent(name: "min", value: trackMin ? new_values.rttMin :  NOT_TRACKING, unit: "ms")
+    sendEvent(name: "avg", value: trackAvg ? new_values.rttAvg :  NOT_TRACKING, unit: "ms")
+    sendEvent(name: "max", value: trackMax ? new_values.rttMax :  NOT_TRACKING, unit: "ms")
 
 }
 
