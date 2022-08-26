@@ -18,6 +18,8 @@
  *    ----        ---            ----
  *    2021-10-31  luarmr         Created basic version for a presence ip virtual sensor
  *    2022-01-17  luarmr         Remove tracking to not always relevant attributes, the sensor became too chatty
+ *    2022-08-26  luarmr         Remove tracking to not always relevant attributes, the sensor became too chatty
+ *                               Change schedule to avoid error when frequency is higher than a minute
  */
 
 import hubitat.helper.NetworkUtils.PingData
@@ -46,7 +48,7 @@ metadata {
 preferences {
     input("IPAddress", "string", title: "The IP Address to ping (127.0.0.1)", defaultValue: '127.0.0.1', required: true)
     input("count", "number", title: "The number of ping requests to send\nNumber between 1 and 5", defaultValue: 3, range: "1..5")
-    input("frequency", "number", title: "Seconds between pings\nNumbers higher than 1", defaultValue: 0, required: true)
+    input("frequency", "number", title: "Seconds between pings\nNumbers higher than 1\n 0 will pause the pings", defaultValue: 600, required: true, range: "0..60")
 
     input("trackPercentLoss", "bool", title: "Track percentLoss?", defaultValue: false)
     input("trackPacketsTransmitted", "bool", title: "Track packetsTransmitted?", defaultValue: false)
@@ -62,8 +64,13 @@ def installed() {
     debugEnable && log.trace("installed()")
 }
 
+def sendEventProxy(name, value, unit = '') {
+    if (device.currentValue(name) != value) {
+        sendEvent(name: name, value: value, unit: unit)
+    }
+}
+
 def updateStates(currentIPAddress = "No valid IPAddress", pingData = null) {
-    NOT_TRACKING = '<span style="color:grey">Not tracking</span>'
 
     new_values = pingData != null ? pingData : [
         packetLoss: 100,
@@ -74,15 +81,15 @@ def updateStates(currentIPAddress = "No valid IPAddress", pingData = null) {
         rttMax: 0,
     ]
 
-    sendEvent(name: "currentIPAddress", value: currentIPAddress)
-    sendEvent(name: "presence", value: (new_values.packetLoss < 100 ? "present" : "not present"))
+    sendEventProxy("currentIPAddress", currentIPAddress)
+    sendEventProxy("presence", (new_values.packetLoss < 100 ? "present" : "not present"))
 
-    sendEvent(name: "percentLoss", value: trackPercentLoss ? new_values.packetLoss : NOT_TRACKING, unit: "%")
-    sendEvent(name: "packetsTransmitted", value: trackPacketsTransmitted ? new_values.packetsTransmitted :  NOT_TRACKING)
-    sendEvent(name: "packetsReceived", value: trackPacketsReceived ? new_values.packetsReceived :  NOT_TRACKING)
-    sendEvent(name: "min", value: trackMin ? new_values.rttMin :  NOT_TRACKING, unit: "ms")
-    sendEvent(name: "avg", value: trackAvg ? new_values.rttAvg :  NOT_TRACKING, unit: "ms")
-    sendEvent(name: "max", value: trackMax ? new_values.rttMax :  NOT_TRACKING, unit: "ms")
+    trackPercentLoss && sendEvent(name: "percentLoss", value: new_values.packetLoss, unit: "%")
+    trackPacketsTransmitted && sendEvent(name: "packetsTransmitted", value: new_values.packetsTransmitted )
+    trackPacketsReceived && sendEvent(name: "packetsReceived", value: new_values.packetsReceived)
+    trackMax && sendEvent(name: "max", value: new_values.rttMax, unit: "ms")
+    trackAvg && sendEvent(name: "avg", value: new_values.rttAvg, unit: "ms")
+    trackMin && sendEvent(name: "min", value: new_values.rttMin, unit: "ms")
 
 }
 
@@ -108,9 +115,13 @@ def isIpValid(ip) {
 
 def schedulle() {
     unschedule()
-    if (frequency > 0) {
+
+    if (frequency == 60) {
+        schedule("0 * * ? * *", ping)
+    } else if (frequency > 0) {
         schedule("0/$frequency * * * * ? *", ping)
     }
+
     ping()
 }
 
@@ -125,6 +136,33 @@ def refresh() {
 }
 
 def updated() {
+    NOT_TRACKING = '<span style="color:grey">Not tracking</span>'
+
     debugEnable && log.trace("updated()")
+
     schedulle();
+
+    if(!trackPercentLoss) {
+        sendEvent(name: "percentLoss", value: NOT_TRACKING)
+    }
+
+    if(!trackPacketsTransmitted) {
+        sendEvent(name: "packetsTransmitted", value: NOT_TRACKING)
+    }
+
+    if(!trackPacketsReceived) {
+        sendEvent(name: "packetsReceived", value: NOT_TRACKING)
+    }
+
+    if(!trackMax) {
+        sendEvent(name: "min", value: NOT_TRACKING)
+    }
+
+    if(!trackAvg) {
+        sendEvent(name: "avg", value: NOT_TRACKING)
+    }
+
+    if(!trackMin) {
+        sendEvent(name: "max", value: NOT_TRACKING)
+    }
 }
