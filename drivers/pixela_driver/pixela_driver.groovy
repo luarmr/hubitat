@@ -62,14 +62,20 @@ def updated() {
 def setProperties() {
     if(user == '' || graphId == '' || name == '') {
         log.error "Driver without required parameters"
+        sendEvent(name: "svgBase", value: "")
+        sendEvent(name: "svgLine", value: "")
+        sendEvent(name: "svgBadge", value: "")
+        sendEvent(name: "htmlLink", value: "")
+        sendEvent(name: "todayRetina", value: "")
         return
     }
-    sendEvent(name: "svgBase", value: "https://pixe.la/v1/users/${user}/graphs/${graphId}")
-    sendEvent(name: "svgLine", value: "https://pixe.la/v1/users/${user}/graphs/${graphId}?mode=line")
-    sendEvent(name: "svgBadge", value: "https://pixe.la/v1/users/${user}/graphs/${graphId}?mode=badge")
+    time = new Date().getTime()
+    sendEvent(name: "svgBase", value: "<img src=\"https://pixe.la/v1/users/${user}/graphs/${graphId}?t=${time}\" />")
+    sendEvent(name: "svgLine", value: "<img src=\"https://pixe.la/v1/users/${user}/graphs/${graphId}?mode=line&t=${time}\" />")
+    sendEvent(name: "svgBadge", value: "<img src=\"https://pixe.la/v1/users/${user}/graphs/${graphId}?mode=badge&t=${time}\" />")
     sendEvent(name: "htmlLink", value: "https://pixe.la/v1/users/${user}/graphs/${graphId}.html")
     date = new Date().format('yyyyMMdd')
-    sendEvent(name: "todayRetina", value: "https://pixe.la/v1/users/${user}/graphs/${graphId}/${date}/retina.svg")
+    sendEvent(name: "todayRetina", value: "<img src=\"https://pixe.la/v1/users/${user}/graphs/${graphId}/${date}/retina.svg?t=${time}\" />")
 }
 
 def parse(String description) {
@@ -96,7 +102,7 @@ def _action(name, num_try) {
         if (txtEnable) {
             log.info "Pixela reply correctly"
         }
-        sendEvent(name: "lastFailureTime", value: new Date().toLocaleString())
+        setProperties()
     }
      try {
         httpPut(params, $parseResponse)
@@ -104,6 +110,7 @@ def _action(name, num_try) {
         if (txtEnable) {
             log.info "Pixela reply incorrectly but expected - retrying left (${retrying_left})"
         }
+        sendEvent(name: "lastFailureTime", value: new Date().toLocaleString())
         _action(name, retrying_left)
     }
 }
@@ -117,3 +124,4 @@ def decrement() {
 	sendEvent(name: "lastCheckinTime", value: new Date().toLocaleString())
     _action('decrement', 20)
 }
+
