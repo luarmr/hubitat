@@ -1,0 +1,17 @@
+{
+  "packageName": "Free HTML driver",
+  "author": "Raul Martin Rodriguez",
+  "version": "1.0",
+  "minimumHEVersion": "2.2.8.156",
+  "dateReleased": "2022-11-08",
+  "drivers": [
+    {
+      "id": "549b9d03-35dd-4e92-a06b-752c7b4f72d8",
+      "name": "Pixela driver",
+      "namespace": "luarmr",
+      "location": "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/pixela_driver/pixela_driver.groovy",
+      "required": true,
+      "version": "1.0.0"
+    }
+  ]
+}
