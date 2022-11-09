@@ -1,9 +1,9 @@
 {
   "packageName": "Free HTML driver",
   "author": "Raul Martin Rodriguez",
-  "version": "1.0",
+  "version": "1.1",
   "minimumHEVersion": "2.2.8.156",
-  "dateReleased": "2022-11-08",
+  "dateReleased": "2022-11-09",
   "drivers": [
     {
       "id": "549b9d03-35dd-4e92-a06b-752c7b4f72d8",
