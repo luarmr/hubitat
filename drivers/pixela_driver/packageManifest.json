@@ -11,7 +11,7 @@
       "namespace": "luarmr",
       "location": "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/pixela_driver/pixela_driver.groovy",
       "required": true,
-      "version": "1.0.0"
+      "version": "1.0.1"
     }
   ]
 }
