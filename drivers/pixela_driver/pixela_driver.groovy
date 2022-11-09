@@ -25,6 +25,7 @@ metadata {
 
         command	"increment"
         command	"decrement"
+        command	"updateStats"
         capability "Actuator"
         attribute "lastFailureTime", "String"
 		attribute "lastCheckinTime", "String"
@@ -33,6 +34,13 @@ metadata {
 		attribute "svgBadge", "String"
 		attribute "htmlLink", "String"
         attribute "todayRetina", "String"
+        attribute "totalPixelsCount", "String"
+        attribute "maxQuantity", "String"
+        attribute "minQuantity", "String"
+        attribute "totalQuantity", "String"
+        attribute "avgQuantity", "String"
+        attribute "todaysQuantity", "String"
+
 
 	}
 	preferences {
@@ -56,11 +64,12 @@ def updated() {
 
     unschedule()
     setProperties();
+    updateStats();
     schedule("0 0 0 * * ?", setProperties)
 }
 
 def setProperties() {
-    if(user == '' || graphId == '' || name == '') {
+    if(user == '' || graphId == '' || token == '') {
         log.error "Driver without required parameters"
         sendEvent(name: "svgBase", value: "")
         sendEvent(name: "svgLine", value: "")
@@ -103,6 +112,7 @@ def _action(name, num_try) {
             log.info "Pixela reply correctly"
         }
         setProperties()
+        updateStats()
     }
      try {
         httpPut(params, $parseResponse)
@@ -125,3 +135,46 @@ def decrement() {
     _action('decrement', 20)
 }
 
+
+def _stats(num_try) {
+    if(user == '' || graphId == '' || token == '') {
+        log.error "Driver without required parameters"
+        return
+    }
+
+    if (num_try == 0) {
+        log.error "Pixela reply incorrectly too many times"
+        return
+    }
+
+    retrying_left = num_try - 1
+
+    params = [
+        uri: "https://pixe.la/v1/users/${user}/graphs/${graphId}/stats"
+    ]
+    Closure $parseResponse = { response ->
+        if (txtEnable) {
+            log.info "Pixela reply correctly"
+        }
+        sendEvent(name: "totalPixelsCount", value: response.data.totalPixelsCount)
+        sendEvent(name: "maxQuantity", value: response.data.maxQuantity)
+        sendEvent(name: "minQuantity", value: response.data.minQuantity)
+        sendEvent(name: "totalQuantity", value: response.data.totalQuantity)
+        sendEvent(name: "avgQuantity", value: response.data.avgQuantity)
+        sendEvent(name: "todaysQuantity", value: response.data.todaysQuantity)
+    }
+     try {
+        httpGet(params, $parseResponse)
+     } catch (e) {
+        if (txtEnable) {
+            log.info "Pixela reply incorrectly but expected - retrying left (${retrying_left})"
+        }
+        sendEvent(name: "lastFailureTime", value: new Date().toLocaleString())
+        _stats(retrying_left)
+    }
+}
+
+def updateStats() {
+	sendEvent(name: "lastCheckinTime", value: new Date().toLocaleString())
+    _stats(20)
+}
