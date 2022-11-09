@@ -16,8 +16,8 @@
       ]
     },
     {
-      "id": "",
-      "name": "549b9d03-35dd-4e92-a06b-752c7b4f72d8",
+      "id": "549b9d03-35dd-4e92-a06b-752c7b4f72d8",
+      "name": "Pixela Driver",
       "category": "Utility",
       "location": "https://raw.githubusercontent.com/luarmr/hubitat/main/drivers/pixela_driver/packageManifest.json",
       "description": "Driver to use pixela from hubitat, and easy access to the graphs on dashboard",
